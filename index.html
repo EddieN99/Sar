@@ -1,173 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Will You Be My Valentine?</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-      overflow: hidden;
-      position: relative;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Will You Be My Valentine?</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    overflow: hidden;
+    position: relative;
+  }
 
-    .card {
-      background: white;
-      padding: 35px 30px 30px;
-      border-radius: 22px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      max-width: 340px;
-      animation: popIn 0.8s ease;
-      position: relative;
-      z-index: 1;
-      margin: auto;
-      top: 50%;
-      transform: translateY(-50%);
-    }
+  .card {
+    background: white;
+    padding: 50px 40px 40px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    max-width: 400px;
+    animation: popIn 0.8s ease;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
 
-    @keyframes popIn {
-      0% { transform: scale(0.6); opacity: 0; }
-      100% { transform: scale(1) translateY(-50%); opacity: 1; }
-    }
+  @keyframes popIn {
+    0% { transform: scale(0.6) translate(-50%, -50%); opacity: 0; }
+    100% { transform: scale(1) translate(-50%, -50%); opacity: 1; }
+  }
 
-    h1 {
-      color: #ff4d6d;
-      margin-bottom: 10px;
-    }
+  h1 {
+    color: #ff4d6d;
+    margin-bottom: 15px;
+    font-size: 28px;
+  }
 
-    p {
-      color: #444;
-      margin-bottom: 15px;
-      font-size: 16px;
-    }
+  p {
+    color: #444;
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
 
-    img.cat {
-      width: 140px;
-      margin: 10px auto 20px;
-      display: block;
-      border-radius: 12px;
-    }
+  img.cat {
+    width: 220px;
+    margin: 15px auto 25px;
+    display: block;
+    border-radius: 14px;
+  }
 
-    button {
-      border: none;
-      padding: 12px 20px;
-      border-radius: 999px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      position: absolute;
-      z-index: 2;
-    }
+  button {
+    border: none;
+    padding: 18px 28px;
+    border-radius: 999px;
+    font-size: 22px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    position: absolute;
+    z-index: 2;
+  }
 
-    button:hover { transform: scale(1.05); }
+  button:hover { transform: scale(1.1); }
 
-    #yes { background: #ff4d6d; color: white; }
-    #no { background: #eee; color: #555; }
+  #yes { background: #ff4d6d; color: white; }
+  #no { background: #eee; color: #555; }
 
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      z-index: 5;
-    }
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 5;
+  }
 
-    .overlay img {
-      width: 260px;
-      border-radius: 14px;
-      margin-bottom: 20px;
-    }
+  .overlay img {
+    width: 400px;
+    border-radius: 14px;
+    margin-bottom: 25px;
+  }
 
-    .firework {
-      position: absolute;
-      font-size: 22px;
-      animation: explode 2.5s ease-out forwards;
-    }
+  .firework {
+    position: absolute;
+    font-size: 32px;
+    animation: explode 2.5s ease-out forwards;
+  }
 
-    @keyframes explode {
-      0% { transform: scale(0.2); opacity: 1; }
-      100% { transform: scale(1.6) translateY(-120px); opacity: 0; }
-    }
-  </style>
+  @keyframes explode {
+    0% { transform: scale(0.2); opacity: 1; }
+    100% { transform: scale(1.8) translateY(-150px); opacity: 0; }
+  }
+</style>
 </head>
 <body>
 
-  <div class="card" id="card">
-    <h1>💖 Hey Sesh 💖</h1>
-    <p>Will you be my Valentine?</p>
-    <img class="cat" src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" alt="Cute animated cat" />
-  </div>
+<div class="card">
+  <h1>💖 Hey Sesh 💖</h1>
+  <p>Will you be my Valentine?</p>
+  <img class="cat" src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" alt="Cute animated cat" />
+</div>
 
-  <button id="yes">Yes 💕</button>
-  <button id="no">No ❌</button>
+<button id="yes">Yes 💕</button>
+<button id="no">No ❌</button>
 
-  <div class="overlay" id="overlay">
-    <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzZyOXh0N3ZlZWk0cmtsY256eHBtcWZwODBidTB2cjk0enIxc2QxayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9Ai5dIk8xvBm0/giphy.gif" alt="Mr Bean doctor gif" />
-    <h1 style="color:white">That's right 😏😏</h1>
-  </div>
+<div class="overlay" id="overlay">
+  <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzZyOXh0N3ZlZWk0cmtsY256eHBtcWZwODBidTB2cjk0enIxc2QxayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9Ai5dIk8xvBm0/giphy.gif" alt="Mr Bean doctor gif" />
+  <h1 style="color:white; font-size:36px">That's right 😏😏</h1>
+</div>
 
-  <script>
-    const yesBtn = document.getElementById('yes');
-    const noBtn = document.getElementById('no');
-    const overlay = document.getElementById('overlay');
+<script>
+const yesBtn = document.getElementById('yes');
+const noBtn = document.getElementById('no');
+const overlay = document.getElementById('overlay');
 
-    // Set absolute positions
-    yesBtn.style.position = 'absolute';
-    noBtn.style.position = 'absolute';
+// Buttons initial position
+function moveButton(btn){
+  const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+  const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+  btn.style.left = x + 'px';
+  btn.style.top = y + 'px';
+}
 
-    // Move button randomly
-    function moveButton(btn){
-      const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-      const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-      btn.style.left = x + 'px';
-      btn.style.top = y + 'px';
-    }
+// Set initial positions
+moveButton(yesBtn);
+moveButton(noBtn);
 
-    // Initial positions
-    moveButton(yesBtn);
+// NO button dodges mouse
+document.addEventListener('mousemove', e => {
+  const rect = noBtn.getBoundingClientRect();
+  const dx = e.clientX - (rect.left + rect.width/2);
+  const dy = e.clientY - (rect.top + rect.height/2);
+  const distance = Math.sqrt(dx*dx + dy*dy);
+  if(distance < 140){
     moveButton(noBtn);
+  }
+});
 
-    // NO button dodges mouse
-    document.addEventListener('mousemove', e => {
-      const rect = noBtn.getBoundingClientRect();
-      const dx = e.clientX - (rect.left + rect.width/2);
-      const dy = e.clientY - (rect.top + rect.height/2);
-      const distance = Math.sqrt(dx*dx + dy*dy);
-      if(distance < 120){
-        moveButton(noBtn);
-      }
-    });
+// Smooth YES movement using requestAnimationFrame
+let yesActive = true;
+let targetX = Math.random() * (window.innerWidth - yesBtn.offsetWidth);
+let targetY = Math.random() * (window.innerHeight - yesBtn.offsetHeight);
 
-    // YES button moves for 5 seconds then stops
-    let yesActive = true;
-    const yesInterval = setInterval(()=>{ if(yesActive) moveButton(yesBtn); }, 600);
-    setTimeout(()=>{ yesActive = false; clearInterval(yesInterval); }, 5000);
+function animateYes(){
+  if(!yesActive) return;
+  const rect = yesBtn.getBoundingClientRect();
+  let dx = targetX - rect.left;
+  let dy = targetY - rect.top;
+  yesBtn.style.left = rect.left + dx * 0.08 + 'px';
+  yesBtn.style.top = rect.top + dy * 0.08 + 'px';
+  if(Math.abs(dx) < 5 && Math.abs(dy) < 5){
+    targetX = Math.random() * (window.innerWidth - yesBtn.offsetWidth);
+    targetY = Math.random() * (window.innerHeight - yesBtn.offsetHeight);
+  }
+  requestAnimationFrame(animateYes);
+}
+animateYes();
+setTimeout(()=>{ yesActive=false; }, 5000);
 
-    // YES click
-    yesBtn.addEventListener('click', ()=>{
-      overlay.style.display = 'flex';
+// YES click
+yesBtn.addEventListener('click', ()=>{
+  overlay.style.display = 'flex';
 
-      // Fireworks
-      for(let i=0;i<40;i++){
-        const fw = document.createElement('div');
-        fw.className='firework';
-        fw.textContent=['🎆','🎇','✨','💖'][Math.floor(Math.random()*4)];
-        fw.style.left = Math.random()*100+'vw';
-        fw.style.top = Math.random()*100+'vh';
-        document.body.appendChild(fw);
-        setTimeout(()=>fw.remove(),2500);
-      }
+  // Fireworks
+  for(let i=0;i<40;i++){
+    const fw = document.createElement('div');
+    fw.className='firework';
+    fw.textContent=['🎆','🎇','✨','💖'][Math.floor(Math.random()*4)];
+    fw.style.left = Math.random()*100+'vw';
+    fw.style.top = Math.random()*100+'vh';
+    document.body.appendChild(fw);
+    setTimeout(()=>fw.remove(),2500);
+  }
+});
 
-    // NO click just moves it
-    noBtn.addEventListener('click', ()=>{ moveButton(noBtn); });
-  </script>
+// NO click
+noBtn.addEventListener('click', ()=>{ moveButton(noBtn); });
+</script>
 
 </body>
 </html>
