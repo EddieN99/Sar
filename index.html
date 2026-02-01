@@ -149,16 +149,25 @@ let targetY = Math.random() * (window.innerHeight - yesBtn.offsetHeight);
 
 function animateYes(){
   if(!yesActive) return;
+
   const rect = yesBtn.getBoundingClientRect();
-  let dx = targetX - rect.left;
-  let dy = targetY - rect.top;
+  const dx = targetX - rect.left;
+  const dy = targetY - rect.top;
+
   yesBtn.style.left = rect.left + dx * 0.08 + 'px';
-  yesBtn.style.top = rect.top + dy * 0.08 + 'px';
-  if(Math.abs(dx) < 5 && Math.abs(dy) < 5){
+  yesBtn.style.top  = rect.top  + dy * 0.08 + 'px';
+
+  if (Math.abs(dx) < 5 && Math.abs(dy) < 5) {
     targetX = Math.random() * (window.innerWidth - yesBtn.offsetWidth);
     targetY = Math.random() * (window.innerHeight - yesBtn.offsetHeight);
   }
+
   requestAnimationFrame(animateYes);
+}
+
+animateYes();
+setTimeout(() => { yesActive = false; }, 10000); // 🔥 10 seconds
+
 }
 animateYes();
 setTimeout(()=>{ yesActive=false; }, 10000);
@@ -167,17 +176,24 @@ setTimeout(()=>{ yesActive=false; }, 10000);
 yesBtn.addEventListener('click', ()=>{
   overlay.style.display = 'flex';
 
-  // Fireworks
-  for(let i=0;i<40;i++){
-    const fw = document.createElement('div');
-    fw.className='firework';
-    fw.textContent=['🎆','🎇','✨','💖'][Math.floor(Math.random()*4)];
-    fw.style.left = Math.random()*100+'vw';
-    fw.style.top = Math.random()*100+'vh';
-    document.body.appendChild(fw);
-    setTimeout(()=>fw.remove(),4500);
-  }
+  const fireworksInterval = setInterval(() => {
+    for(let i = 0; i < 20; i++) {   // 🔥 particles per burst
+      const fw = document.createElement('div');
+      fw.className = 'firework';
+      fw.textContent = ['🎆','🎇','✨','💖','💥','🔥'][Math.floor(Math.random()*6)];
+      fw.style.left = Math.random() * 100 + 'vw';
+      fw.style.top  = Math.random() * 100 + 'vh';
+      document.body.appendChild(fw);
+      setTimeout(() => fw.remove(), 3000);
+    }
+  }, 400); // 🔥 new explosion every 0.4s
+
+  // Stop fireworks after 30 seconds
+  setTimeout(() => {
+    clearInterval(fireworksInterval);
+  }, 30000);
 });
+
 
 // NO click
 noBtn.addEventListener('click', ()=>{ moveButton(noBtn); });
