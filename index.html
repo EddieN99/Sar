@@ -89,7 +89,7 @@
   .firework {
     position: absolute;
     font-size: 32px;
-    animation: explode 2.5s ease-out forwards;
+    animation: explode 10s ease-out forwards;
   }
 
   @keyframes explode {
@@ -161,7 +161,7 @@ function animateYes(){
   requestAnimationFrame(animateYes);
 }
 animateYes();
-setTimeout(()=>{ yesActive=false; }, 5000);
+setTimeout(()=>{ yesActive=false; }, 10000);
 
 // YES click
 yesBtn.addEventListener('click', ()=>{
@@ -175,7 +175,7 @@ yesBtn.addEventListener('click', ()=>{
     fw.style.left = Math.random()*100+'vw';
     fw.style.top = Math.random()*100+'vh';
     document.body.appendChild(fw);
-    setTimeout(()=>fw.remove(),2500);
+    setTimeout(()=>fw.remove(),4500);
   }
 });
 
