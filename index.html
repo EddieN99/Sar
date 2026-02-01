@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Will You Be My Valentine, Sarah?</title>
+<title>Sarah, will You Be My Valentine?</title>
 
 <style>
 body {
@@ -82,7 +82,7 @@ button {
 <body>
 
 <div class="card">
-  <h1>💖 Will you be my Valentine, Sarah? 💖</h1>
+  <h1>💖 Sarah, will you be my Valentine? 💖</h1>
   <img class="cat" src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif">
 </div>
 
@@ -95,54 +95,143 @@ button {
 </div>
 
 <script>
-window.onload = () => {
-  const yes = document.getElementById('yes');
-  const no = document.getElementById('no');
-  const overlay = document.getElementById('overlay');
+<script>
+const yesBtn = document.getElementById('yes');
+const noBtn = document.getElementById('no');
+const overlay = document.getElementById('overlay');
 
-  function move(btn) {
-    const x = Math.random() * (window.innerWidth - btn.offsetWidth - 20);
-    const y = Math.random() * (window.innerHeight - btn.offsetHeight - 20);
-    btn.style.left = x + 'px';
-    btn.style.top = y + 'px';
+let yesScale = 1;
+let noScale = 1;
+let yesSpeedMultiplier = 1;
+let yesActive = true;
+let hesitationTimer;
+let shakeTimeout;
+
+// -------------------- UTIL --------------------
+function randomPos(btn) {
+  const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+  const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+  btn.style.left = x + 'px';
+  btn.style.top = y + 'px';
+}
+
+function screenShake() {
+  document.body.style.transition = 'transform 0.05s';
+  document.body.style.transform = 'translate(6px, 6px)';
+  clearTimeout(shakeTimeout);
+  shakeTimeout = setTimeout(() => {
+    document.body.style.transform = 'translate(0,0)';
+  }, 120);
+}
+
+// -------------------- INITIAL POSITIONS --------------------
+yesBtn.style.position = 'absolute';
+noBtn.style.position = 'absolute';
+
+randomPos(yesBtn);
+randomPos(noBtn);
+
+// -------------------- NO DODGES MOUSE --------------------
+document.addEventListener('mousemove', e => {
+  const rect = noBtn.getBoundingClientRect();
+  const dx = e.clientX - (rect.left + rect.width / 2);
+  const dy = e.clientY - (rect.top + rect.height / 2);
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist < 140) randomPos(noBtn);
+});
+
+// -------------------- YES SMOOTH MOVEMENT --------------------
+let targetX = Math.random() * (window.innerWidth - yesBtn.offsetWidth);
+let targetY = Math.random() * (window.innerHeight - yesBtn.offsetHeight);
+
+function animateYes() {
+  if (!yesActive) return;
+
+  const rect = yesBtn.getBoundingClientRect();
+  const dx = targetX - rect.left;
+  const dy = targetY - rect.top;
+
+  yesBtn.style.left = rect.left + dx * (0.07 / yesSpeedMultiplier) + 'px';
+  yesBtn.style.top = rect.top + dy * (0.07 / yesSpeedMultiplier) + 'px';
+
+  if (Math.abs(dx) < 8 && Math.abs(dy) < 8) {
+    targetX = Math.random() * (window.innerWidth - yesBtn.offsetWidth);
+    targetY = Math.random() * (window.innerHeight - yesBtn.offsetHeight);
   }
 
-  move(yes);
-  move(no);
+  requestAnimationFrame(animateYes);
+}
+animateYes();
 
-  // NO dodges mouse
-  document.addEventListener('mousemove', e => {
-    const r = no.getBoundingClientRect();
-    const dx = e.clientX - (r.left + r.width / 2);
-    const dy = e.clientY - (r.top + r.height / 2);
-    if (Math.sqrt(dx*dx + dy*dy) < 130) move(no);
-  });
+// Stop YES after 10s
+setTimeout(() => { yesActive = false; }, 10000);
 
-  // YES moves smoothly for 10 seconds
-  const yesMove = setInterval(() => move(yes), 900);
-  setTimeout(() => clearInterval(yesMove), 10000);
+// -------------------- YES MAGNET TO CURSOR --------------------
+document.addEventListener('mousemove', e => {
+  if (!yesActive) return;
+  const rect = yesBtn.getBoundingClientRect();
+  const dx = e.clientX - (rect.left + rect.width / 2);
+  const dy = e.clientY - (rect.top + rect.height / 2);
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist < 180) {
+    yesBtn.style.left = rect.left + dx * 0.02 + 'px';
+    yesBtn.style.top = rect.top + dy * 0.02 + 'px';
+  }
+});
 
-  // YES click
-  yes.onclick = () => {
-    overlay.style.display = 'flex';
+// -------------------- NO CLICK CHAOS --------------------
+noBtn.addEventListener('click', () => {
+  randomPos(noBtn);
 
-    const fireworkInterval = setInterval(() => {
-      for (let i = 0; i < 15; i++) {
-        const f = document.createElement('div');
-        f.className = 'firework';
-        f.textContent = ['🎆','🎇','💥','✨','💖'][Math.floor(Math.random()*5)];
-        f.style.left = Math.random() * 100 + 'vw';
-        f.style.top = Math.random() * 100 + 'vh';
-        document.body.appendChild(f);
-        setTimeout(() => f.remove(), 3000);
-      }
-    }, 400);
+  // YES grows
+  yesScale += 0.15;
+  if (yesScale > 2.2) yesScale = 2.2;
+  yesBtn.style.transform = `scale(${yesScale})`;
 
-    setTimeout(() => clearInterval(fireworkInterval), 30000);
-  };
+  // YES slows
+  yesSpeedMultiplier += 0.25;
+  if (yesSpeedMultiplier > 3) yesSpeedMultiplier = 3;
 
-  no.onclick = () => move(no);
-};
+  // NO shrinks
+  noScale -= 0.12;
+  if (noScale < 0.4) noScale = 0.4;
+  noBtn.style.transform = `scale(${noScale})`;
+
+  screenShake();
+});
+
+// -------------------- HESITATION FIREWORKS --------------------
+function hesitationFireworks() {
+  for (let i = 0; i < 20; i++) {
+    const fw = document.createElement('div');
+    fw.className = 'firework';
+    fw.textContent = ['🎆','🎇','✨','💖'][Math.floor(Math.random()*4)];
+    fw.style.left = Math.random()*100+'vw';
+    fw.style.top = Math.random()*100+'vh';
+    fw.style.fontSize = 20 + Math.random()*30 + 'px';
+    document.body.appendChild(fw);
+    setTimeout(() => fw.remove(), 6000);
+  }
+}
+
+hesitationTimer = setTimeout(hesitationFireworks, 6000);
+
+// -------------------- YES CLICK --------------------
+yesBtn.addEventListener('click', () => {
+  overlay.style.display = 'flex';
+  clearTimeout(hesitationTimer);
+
+  for (let i = 0; i < 70; i++) {
+    const fw = document.createElement('div');
+    fw.className = 'firework';
+    fw.textContent = ['🎆','🎇','✨','💖','🔥'][Math.floor(Math.random()*5)];
+    fw.style.left = Math.random()*100+'vw';
+    fw.style.top = Math.random()*100+'vh';
+    fw.style.fontSize = 24 + Math.random()*36 + 'px';
+    document.body.appendChild(fw);
+    setTimeout(() => fw.remove(), 12000);
+  }
+});
 </script>
 
 </body>
