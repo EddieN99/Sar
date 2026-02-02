@@ -38,14 +38,14 @@ img.cat {
 }
 
 button {
-  position: absolute;
   padding: 18px 34px;
   font-size: 22px;
   border-radius: 999px;
   border: none;
   cursor: pointer;
   z-index: 5;
-  transition: transform 0.25s ease;
+  transition: transform 0.25s ease, left 0.2s, top 0.2s;
+  position: absolute;
 }
 
 #yes { background: #ff4d6d; color: white; }
@@ -63,7 +63,7 @@ button {
 }
 
 .overlay img {
-  width: 520px;          /* 🔥 BIGGER MR BEAN */
+  width: 520px;          /* Bigger Mr Bean */
   max-width: 90vw;
   border-radius: 20px;
   animation: popIn 0.8s ease-out forwards;
@@ -107,52 +107,49 @@ window.onload = () => {
   const yesBtn = document.getElementById('yes');
   const noBtn = document.getElementById('no');
   const overlay = document.getElementById('overlay');
-
-  let yesScale = 1;
-  let noScale = 1;
   let firstNoClick = true;
 
-  function randomPos(btn) {
-    btn.style.left = Math.random() * (window.innerWidth - btn.offsetWidth) + 'px';
-    btn.style.top  = Math.random() * (window.innerHeight - btn.offsetHeight) + 'px';
+  // Position YES below the cat image
+  const card = document.querySelector('.card');
+  const catImg = document.querySelector('.cat');
+  const cardRect = card.getBoundingClientRect();
+
+  yesBtn.style.left = cardRect.left + card.offsetWidth/2 - yesBtn.offsetWidth/2 + 'px';
+  yesBtn.style.top = cardRect.top + catImg.offsetHeight + 20 + 'px';
+  yesBtn.style.position = 'absolute';
+
+  // Position NO initially to the right of YES
+  noBtn.style.left = parseFloat(yesBtn.style.left) + yesBtn.offsetWidth + 20 + 'px';
+  noBtn.style.top = yesBtn.style.top;
+  noBtn.style.position = 'absolute';
+
+  // ---------- NO MOVES ----------
+  function moveNo() {
+    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
   }
 
-  randomPos(yesBtn);
-  randomPos(noBtn);
-
-  /* ---------- NO FLEES FASTER ---------- */
   document.addEventListener('mousemove', e => {
-    const r = noBtn.getBoundingClientRect();
-    const dx = e.clientX - (r.left + r.width / 2);
-    const dy = e.clientY - (r.top + r.height / 2);
+    const rect = noBtn.getBoundingClientRect();
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top + rect.height / 2);
     const dist = Math.hypot(dx, dy);
-
-    if (dist < 260) {
-      randomPos(noBtn);
-      setTimeout(() => randomPos(noBtn), 20); // extra panic jump
-    }
+    if (dist < 180) moveNo();
   });
 
-  /* ---------- NO CLICK ---------- */
+  // ---------- NO CLICK ----------
   noBtn.addEventListener('click', () => {
-    randomPos(noBtn);
+    moveNo();
 
     if (firstNoClick) {
-      yesScale = 2.3;   // 🚀 INSTANT BIG YES
+      yesBtn.style.transform = 'scale(2.3)'; // YES grows instantly
       firstNoClick = false;
     }
-
-    yesBtn.style.transform = `scale(${yesScale})`;
-
-    noScale -= 0.12;
-    if (noScale < 0.4) noScale = 0.4;
-    noBtn.style.transform = `scale(${noScale})`;
-
-    document.body.style.transform = 'translate(6px,6px)';
-    setTimeout(() => document.body.style.transform = 'translate(0,0)', 120);
   });
 
-  /* ---------- YES CLICK ---------- */
+  // ---------- YES CLICK ----------
   yesBtn.addEventListener('click', () => {
     overlay.style.display = 'flex';
 
