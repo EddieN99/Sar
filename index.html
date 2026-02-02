@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sarah, will You Be My Valentine?</title>
+
 <style>
 body {
   margin: 0;
@@ -44,7 +45,7 @@ button {
   border: none;
   cursor: pointer;
   z-index: 5;
-  transition: left 0.8s ease, top 0.8s ease, transform 0.3s ease;
+  transition: transform 0.25s ease;
 }
 
 #yes { background: #ff4d6d; color: white; }
@@ -62,8 +63,15 @@ button {
 }
 
 .overlay img {
-  width: 420px;
-  border-radius: 15px;
+  width: 520px;          /* 🔥 BIGGER MR BEAN */
+  max-width: 90vw;
+  border-radius: 20px;
+  animation: popIn 0.8s ease-out forwards;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.3); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 .firework {
@@ -78,18 +86,19 @@ button {
 }
 </style>
 </head>
+
 <body>
 
 <div class="card">
   <h1>💖 Sarah, will you be my Valentine? 💖</h1>
-  <img class="cat" src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" alt="Cute cat">
+  <img class="cat" src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif">
 </div>
 
 <button id="yes">Yes 💕</button>
 <button id="no">No ❌</button>
 
 <div class="overlay" id="overlay">
-  <img src="https://media.giphy.com/media/9Ai5dIk8xvBm0/giphy.gif" alt="Mr Bean doctor">
+  <img src="https://media.giphy.com/media/9Ai5dIk8xvBm0/giphy.gif">
   <h1 style="color:white;">That’s right 😏</h1>
 </div>
 
@@ -98,135 +107,54 @@ window.onload = () => {
   const yesBtn = document.getElementById('yes');
   const noBtn = document.getElementById('no');
   const overlay = document.getElementById('overlay');
-  let firstNoClick = true;
-
 
   let yesScale = 1;
   let noScale = 1;
-  let yesSpeedMultiplier = 5;
-  let yesActive = true;
-  let hesitationTimer;
-  let shakeTimeout;
+  let firstNoClick = true;
 
-  // -------------------- UTIL --------------------
   function randomPos(btn) {
-    const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-    const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-    btn.style.left = x + 'px';
-    btn.style.top = y + 'px';
+    btn.style.left = Math.random() * (window.innerWidth - btn.offsetWidth) + 'px';
+    btn.style.top  = Math.random() * (window.innerHeight - btn.offsetHeight) + 'px';
   }
-
-  function screenShake() {
-    document.body.style.transition = 'transform 0.05s';
-    document.body.style.transform = 'translate(6px, 6px)';
-    clearTimeout(shakeTimeout);
-    shakeTimeout = setTimeout(() => {
-      document.body.style.transform = 'translate(0,0)';
-    }, 120);
-  }
-
-  // -------------------- INITIAL POSITIONS --------------------
-  yesBtn.style.position = 'absolute';
-  noBtn.style.position = 'absolute';
 
   randomPos(yesBtn);
   randomPos(noBtn);
 
-  // -------------------- NO DODGES MOUSE --------------------
+  /* ---------- NO FLEES FASTER ---------- */
   document.addEventListener('mousemove', e => {
-  const rect = noBtn.getBoundingClientRect();
-  const dx = e.clientX - (rect.left + rect.width / 2);
-  const dy = e.clientY - (rect.top + rect.height / 2);
-  const dist = Math.sqrt(dx * dx + dy * dy);
+    const r = noBtn.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2);
+    const dy = e.clientY - (r.top + r.height / 2);
+    const dist = Math.hypot(dx, dy);
 
-  if (dist < 220) {
-    // jump twice for extra speed
-    randomPos(noBtn);
-    setTimeout(() => randomPos(noBtn), 30);
-  }
-});
-
-  // -------------------- YES SMOOTH MOVEMENT --------------------
-  let targetX = Math.random() * (window.innerWidth - yesBtn.offsetWidth);
-  let targetY = Math.random() * (window.innerHeight - yesBtn.offsetHeight);
-
-  function animateYes() {
-    if (!yesActive) return;
-    const rect = yesBtn.getBoundingClientRect();
-    const dx = targetX - rect.left;
-    const dy = targetY - rect.top;
-
-    yesBtn.style.left = rect.left + dx * (0.07 / yesSpeedMultiplier) + 'px';
-    yesBtn.style.top = rect.top + dy * (0.07 / yesSpeedMultiplier) + 'px';
-
-    if (Math.abs(dx) < 8 && Math.abs(dy) < 8) {
-      targetX = Math.random() * (window.innerWidth - yesBtn.offsetWidth);
-      targetY = Math.random() * (window.innerHeight - yesBtn.offsetHeight);
-    }
-
-    requestAnimationFrame(animateYes);
-  }
-  animateYes();
-  setTimeout(() => { yesActive = false; }, 12000);
-
-  // -------------------- YES MAGNET TO CURSOR --------------------
-  document.addEventListener('mousemove', e => {
-    if (!yesActive) return;
-    const rect = yesBtn.getBoundingClientRect();
-    const dx = e.clientX - (rect.left + rect.width / 2);
-    const dy = e.clientY - (rect.top + rect.height / 2);
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist < 180) {
-      yesBtn.style.left = rect.left + dx * 0.02 + 'px';
-      yesBtn.style.top = rect.top + dy * 0.02 + 'px';
+    if (dist < 260) {
+      randomPos(noBtn);
+      setTimeout(() => randomPos(noBtn), 20); // extra panic jump
     }
   });
 
-  // -------------------- NO CLICK CHAOS --------------------
+  /* ---------- NO CLICK ---------- */
   noBtn.addEventListener('click', () => {
-  randomPos(noBtn);
+    randomPos(noBtn);
 
-  // INSTANT YES growth on first NO
-  if (firstNoClick) {
-    yesScale = 2;
-    firstNoClick = false;
-  }
-
-  yesBtn.style.transform = `scale(${yesScale})`;
-
-  // Optional: still slow YES, a bit
-  yesSpeedMultiplier += 0.5;
-  if (yesSpeedMultiplier > 3) yesSpeedMultiplier = 3;
-
-  // NO shrinks
-  noScale -= 0.12;
-  if (noScale < 0.4) noScale = 0.4;
-  noBtn.style.transform = `scale(${noScale})`;
-
-  screenShake();
-});
-
-
-  // -------------------- HESITATION FIREWORKS --------------------
-  function hesitationFireworks() {
-    for (let i = 0; i < 20; i++) {
-      const fw = document.createElement('div');
-      fw.className = 'firework';
-      fw.textContent = ['🎆','🎇','✨','💖'][Math.floor(Math.random()*4)];
-      fw.style.left = Math.random()*100+'vw';
-      fw.style.top = Math.random()*100+'vh';
-      fw.style.fontSize = 20 + Math.random()*30 + 'px';
-      document.body.appendChild(fw);
-      setTimeout(() => fw.remove(), 10000);
+    if (firstNoClick) {
+      yesScale = 2.3;   // 🚀 INSTANT BIG YES
+      firstNoClick = false;
     }
-  }
 
-  hesitationTimer = setTimeout(hesitationFireworks, 10000);
+    yesBtn.style.transform = `scale(${yesScale})`;
 
-  // -------------------- YES CLICK --------------------
+    noScale -= 0.12;
+    if (noScale < 0.4) noScale = 0.4;
+    noBtn.style.transform = `scale(${noScale})`;
+
+    document.body.style.transform = 'translate(6px,6px)';
+    setTimeout(() => document.body.style.transform = 'translate(0,0)', 120);
+  });
+
+  /* ---------- YES CLICK ---------- */
   yesBtn.addEventListener('click', () => {
     overlay.style.display = 'flex';
-    clearTimeout(hesitationTimer);
 
     for (let i = 0; i < 70; i++) {
       const fw = document.createElement('div');
@@ -241,3 +169,6 @@ window.onload = () => {
   });
 };
 </script>
+
+</body>
+</html>
