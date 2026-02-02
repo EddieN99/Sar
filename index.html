@@ -101,7 +101,7 @@ window.onload = () => {
 
   let yesScale = 1;
   let noScale = 1;
-  let yesSpeedMultiplier = 1;
+  let yesSpeedMultiplier = 5;
   let yesActive = true;
   let hesitationTimer;
   let shakeTimeout;
@@ -179,11 +179,11 @@ window.onload = () => {
   noBtn.addEventListener('click', () => {
     randomPos(noBtn);
 
-    yesScale += 0.15;
+    yesScale += 0.9;
     if (yesScale > 2.2) yesScale = 2.2;
     yesBtn.style.transform = `scale(${yesScale})`;
 
-    yesSpeedMultiplier += 0.25;
+    yesSpeedMultiplier += 1;
     if (yesSpeedMultiplier > 3) yesSpeedMultiplier = 3;
 
     noScale -= 0.12;
