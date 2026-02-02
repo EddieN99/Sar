@@ -98,6 +98,8 @@ window.onload = () => {
   const yesBtn = document.getElementById('yes');
   const noBtn = document.getElementById('no');
   const overlay = document.getElementById('overlay');
+  let firstNoClick = true;
+
 
   let yesScale = 1;
   let noScale = 1;
@@ -132,12 +134,17 @@ window.onload = () => {
 
   // -------------------- NO DODGES MOUSE --------------------
   document.addEventListener('mousemove', e => {
-    const rect = noBtn.getBoundingClientRect();
-    const dx = e.clientX - (rect.left + rect.width / 2);
-    const dy = e.clientY - (rect.top + rect.height / 2);
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist < 140) randomPos(noBtn);
-  });
+  const rect = noBtn.getBoundingClientRect();
+  const dx = e.clientX - (rect.left + rect.width / 2);
+  const dy = e.clientY - (rect.top + rect.height / 2);
+  const dist = Math.sqrt(dx * dx + dy * dy);
+
+  if (dist < 220) {
+    // jump twice for extra speed
+    randomPos(noBtn);
+    setTimeout(() => randomPos(noBtn), 30);
+  }
+});
 
   // -------------------- YES SMOOTH MOVEMENT --------------------
   let targetX = Math.random() * (window.innerWidth - yesBtn.offsetWidth);
@@ -177,21 +184,28 @@ window.onload = () => {
 
   // -------------------- NO CLICK CHAOS --------------------
   noBtn.addEventListener('click', () => {
-    randomPos(noBtn);
+  randomPos(noBtn);
 
-    yesScale += 0.9;
-    if (yesScale > 2.2) yesScale = 2.2;
-    yesBtn.style.transform = `scale(${yesScale})`;
+  // INSTANT YES growth on first NO
+  if (firstNoClick) {
+    yesScale = 2;
+    firstNoClick = false;
+  }
 
-    yesSpeedMultiplier += 1;
-    if (yesSpeedMultiplier > 3) yesSpeedMultiplier = 3;
+  yesBtn.style.transform = `scale(${yesScale})`;
 
-    noScale -= 0.12;
-    if (noScale < 0.4) noScale = 0.4;
-    noBtn.style.transform = `scale(${noScale})`;
+  // Optional: still slow YES, a bit
+  yesSpeedMultiplier += 0.5;
+  if (yesSpeedMultiplier > 3) yesSpeedMultiplier = 3;
 
-    screenShake();
-  });
+  // NO shrinks
+  noScale -= 0.12;
+  if (noScale < 0.4) noScale = 0.4;
+  noBtn.style.transform = `scale(${noScale})`;
+
+  screenShake();
+});
+
 
   // -------------------- HESITATION FIREWORKS --------------------
   function hesitationFireworks() {
