@@ -3,90 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sarah, will You Be My Valentine?</title>
-
+<title>Sarah, Will You Be My Valentine?</title>
 <style>
-body {
-  margin: 0;
-  height: 100vh;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-  overflow: hidden;
-  position: relative;
-}
+  /* ----- BODY & CARD ----- */
+  body {
+    margin: 0;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    overflow: hidden;
+    position: relative;
+  }
 
-.card {
-  background: white;
-  padding: 40px;
-  border-radius: 25px;
-  text-align: center;
-  width: 380px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-  z-index: 1;
-}
+  .card {
+    background: white;
+    padding: 40px;
+    border-radius: 25px;
+    text-align: center;
+    width: 380px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    z-index: 10;
+    animation: cardPop 0.8s ease-out;
+  }
 
-h1 { color: #ff4d6d; }
+  @keyframes cardPop {
+    0% { transform: scale(0.5) translate(-50%, -50%); opacity: 0; }
+    100% { transform: scale(1) translate(-50%, -50%); opacity: 1; }
+  }
 
-img.cat {
-  width: 300px;
-  margin-top: 20px;
-  border-radius: 15px;
-}
+  h1 { color: #ff4d6d; font-size: 28px; margin-bottom: 20px; }
 
-button {
-  padding: 18px 34px;
-  font-size: 22px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  z-index: 5;
-  transition: transform 0.25s ease, left 0.2s, top 0.2s;
-  position: absolute;
-}
+  img.cat {
+    width: 320px;
+    border-radius: 15px;
+  }
 
-#yes { background: #ff4d6d; color: white; }
-#no { background: #eee; color: #555; }
+  /* ----- BUTTONS ----- */
+  button {
+    position: absolute;
+    padding: 20px 40px;
+    font-size: 22px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    z-index: 20;
+    transition: transform 0.25s ease, left 0.2s, top 0.2s;
+  }
+  #yes { background: #ff4d6d; color: white; }
+  #no { background: #eee; color: #555; }
 
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  z-index: 10;
-}
+  /* ----- OVERLAY ----- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 30;
+  }
+  .overlay img {
+    width: 600px;
+    max-width: 90vw;
+    border-radius: 20px;
+    animation: popIn 0.8s ease-out forwards;
+  }
+  .overlay h1 {
+    color: white;
+    font-size: 38px;
+    margin-top: 20px;
+    text-shadow: 0 0 10px #fff;
+  }
+  @keyframes popIn {
+    from { transform: scale(0.3); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
 
-.overlay img {
-  width: 520px;          /* Bigger Mr Bean */
-  max-width: 90vw;
-  border-radius: 20px;
-  animation: popIn 0.8s ease-out forwards;
-}
+  /* ----- FIREWORKS ----- */
+  .firework {
+    position: fixed;
+    font-size: 40px;
+    animation: explode 4s ease-out forwards;
+  }
+  @keyframes explode {
+    0% { transform: scale(0.2); opacity: 1; }
+    100% { transform: scale(2) translateY(-250px) rotate(720deg); opacity: 0; }
+  }
 
-@keyframes popIn {
-  from { transform: scale(0.3); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
+  /* ----- FLOATING HEARTS ----- */
+  .heart {
+    position: fixed;
+    font-size: 24px;
+    pointer-events: none;
+    animation: floatUp linear forwards;
+    user-select: none;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
+  }
 
-.firework {
-  position: fixed;
-  font-size: 40px;
-  animation: explode 3s ease-out forwards;
-}
-
-@keyframes explode {
-  0% { transform: scale(0.3); opacity: 1; }
-  100% { transform: scale(2) translateY(-200px); opacity: 0; }
-}
 </style>
 </head>
-
 <body>
 
 <div class="card">
@@ -99,7 +122,7 @@ button {
 
 <div class="overlay" id="overlay">
   <img src="https://media.giphy.com/media/9Ai5dIk8xvBm0/giphy.gif">
-  <h1 style="color:white;">That’s right 😏</h1>
+  <h1>That’s right 😏</h1>
 </div>
 
 <script>
@@ -109,21 +132,18 @@ window.onload = () => {
   const overlay = document.getElementById('overlay');
   let firstNoClick = true;
 
-  // Position YES below the cat image
+  /* ----- POSITION YES & NO ----- */
   const card = document.querySelector('.card');
   const catImg = document.querySelector('.cat');
   const cardRect = card.getBoundingClientRect();
 
   yesBtn.style.left = cardRect.left + card.offsetWidth/2 - yesBtn.offsetWidth/2 + 'px';
-  yesBtn.style.top = cardRect.top + catImg.offsetHeight + 20 + 'px';
-  yesBtn.style.position = 'absolute';
+  yesBtn.style.top = cardRect.top + catImg.offsetHeight + 25 + 'px';
 
-  // Position NO initially to the right of YES
   noBtn.style.left = parseFloat(yesBtn.style.left) + yesBtn.offsetWidth + 20 + 'px';
   noBtn.style.top = yesBtn.style.top;
-  noBtn.style.position = 'absolute';
 
-  // ---------- NO MOVES ----------
+  /* ----- NO MOVEMENT ----- */
   function moveNo() {
     const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
     const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
@@ -132,28 +152,37 @@ window.onload = () => {
   }
 
   document.addEventListener('mousemove', e => {
-    const rect = noBtn.getBoundingClientRect();
-    const dx = e.clientX - (rect.left + rect.width / 2);
-    const dy = e.clientY - (rect.top + rect.height / 2);
+    const r = noBtn.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width/2);
+    const dy = e.clientY - (r.top + r.height/2);
     const dist = Math.hypot(dx, dy);
-    if (dist < 180) moveNo();
+    if (dist < 180) {
+      moveNo();
+      setTimeout(() => moveNo(), 20); // extra speed jump
+    }
   });
 
-  // ---------- NO CLICK ----------
+  /* ----- NO CLICK ----- */
   noBtn.addEventListener('click', () => {
     moveNo();
 
     if (firstNoClick) {
-      yesBtn.style.transform = 'scale(2.3)'; // YES grows instantly
+      yesBtn.style.transform = 'scale(2.5)'; // YES instantly grows
       firstNoClick = false;
     }
+
+    // small shake effect
+    document.body.style.transition = 'transform 0.05s';
+    document.body.style.transform = 'translate(6px,6px)';
+    setTimeout(() => document.body.style.transform = 'translate(0,0)', 120);
   });
 
-  // ---------- YES CLICK ----------
+  /* ----- YES CLICK ----- */
   yesBtn.addEventListener('click', () => {
     overlay.style.display = 'flex';
 
-    for (let i = 0; i < 70; i++) {
+    // Big chaotic fireworks
+    for(let i=0;i<100;i++){
       const fw = document.createElement('div');
       fw.className = 'firework';
       fw.textContent = ['🎆','🎇','✨','💖','🔥'][Math.floor(Math.random()*5)];
@@ -161,8 +190,19 @@ window.onload = () => {
       fw.style.top = Math.random()*100+'vh';
       fw.style.fontSize = 24 + Math.random()*36 + 'px';
       document.body.appendChild(fw);
-      setTimeout(() => fw.remove(), 16000);
+      setTimeout(()=>fw.remove(), 30000);
     }
+
+    // Floating hearts
+    setInterval(() => {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.textContent = '💖';
+      heart.style.left = Math.random()*100+'vw';
+      heart.style.fontSize = 24 + Math.random()*24 + 'px';
+      document.body.appendChild(heart);
+      setTimeout(()=>heart.remove(), 8000);
+    }, 500);
   });
 };
 </script>
