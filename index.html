@@ -66,7 +66,7 @@ button {
   color: #555;
 }
 
-/* FLOATING NO (after escape) */
+/* FLOATING NO */
 #no.floating {
   position: fixed;
   z-index: 5;
@@ -110,7 +110,8 @@ button {
     opacity: 0;
   }
 }
-  /* CHILLIES */
+
+/* 🌶️ CHILLIES */
 .chilli {
   position: fixed;
   top: -40px;
@@ -129,7 +130,6 @@ button {
     opacity: 0;
   }
 }
-
 </style>
 </head>
 
@@ -157,8 +157,9 @@ const overlay = document.getElementById('overlay');
 
 let escaped = false;
 let firstNoClick = true;
+let chilliStarted = false;
 
-/* RANDOM SCREEN POSITION */
+/* RANDOM POSITION */
 function randomScreenPos(btn) {
   const x = Math.random() * (window.innerWidth - btn.offsetWidth);
   const y = Math.random() * (window.innerHeight - btn.offsetHeight);
@@ -166,7 +167,7 @@ function randomScreenPos(btn) {
   btn.style.top = y + 'px';
 }
 
-/* RELEASE THE NO BUTTON */
+/* RELEASE NO */
 function releaseNo() {
   if (escaped) return;
 
@@ -174,11 +175,27 @@ function releaseNo() {
   noBtn.classList.add('floating');
   noBtn.style.left = rect.left + 'px';
   noBtn.style.top = rect.top + 'px';
-
   escaped = true;
 }
 
-/* NO RUNS FROM CURSOR */
+/* 🌶️ START CHILLIES */
+function startChillies() {
+  if (chilliStarted) return;
+  chilliStarted = true;
+
+  setInterval(() => {
+    const chilli = document.createElement('div');
+    chilli.className = 'chilli';
+    chilli.textContent = '🌶️';
+    chilli.style.left = Math.random() * 100 + 'vw';
+    chilli.style.fontSize = 24 + Math.random() * 28 + 'px';
+    document.body.appendChild(chilli);
+
+    setTimeout(() => chilli.remove(), 7000);
+  }, 120);
+}
+
+/* NO DODGES CURSOR */
 document.addEventListener('mousemove', e => {
   if (!escaped) return;
 
@@ -187,15 +204,14 @@ document.addEventListener('mousemove', e => {
   const dy = e.clientY - (r.top + r.height / 2);
   const dist = Math.hypot(dx, dy);
 
-  if (dist < 220) {
-    randomScreenPos(noBtn);
-  }
+  if (dist < 220) randomScreenPos(noBtn);
 });
 
 /* NO CLICK */
 noBtn.addEventListener('click', () => {
   releaseNo();
   randomScreenPos(noBtn);
+  startChillies(); // 🌶️ CHAOS BEGINS
 
   if (firstNoClick) {
     yesBtn.style.transform = 'scale(2.3)';
@@ -223,7 +239,6 @@ yesBtn.addEventListener('click', () => {
   }
 });
 </script>
-
 
 </body>
 </html>
