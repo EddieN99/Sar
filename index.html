@@ -179,8 +179,13 @@ noBtn.addEventListener('click', () => {
 
   if (firstNoClick) {
     yesBtn.style.transform = 'scale(2.3)';
+    yesBtn.textContent = 'Hell yeah 🔥'; // 😏 NEW LINE
     firstNoClick = false;
   }
+
+  document.body.style.transform = 'translate(6px,6px)';
+  setTimeout(() => document.body.style.transform = 'translate(0,0)', 120);
+});
 
   // screen shake
   document.body.style.transform = 'translate(6px,6px)';
