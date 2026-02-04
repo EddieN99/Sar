@@ -17,6 +17,7 @@ body {
   overflow: hidden;
 }
 
+/* CARD */
 .card {
   background: white;
   padding: 40px;
@@ -25,6 +26,7 @@ body {
   width: 380px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.2);
   position: relative;
+  z-index: 2;
 }
 
 h1 {
@@ -37,11 +39,12 @@ img.cat {
   border-radius: 15px;
 }
 
-/* BUTTON AREA */
+/* BUTTONS */
 .buttons {
   margin-top: 25px;
-  position: relative;
-  height: 90px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 
 button {
@@ -50,20 +53,23 @@ button {
   border-radius: 999px;
   border: none;
   cursor: pointer;
-  position: absolute;
   transition: transform 0.25s ease;
 }
 
 #yes {
   background: #ff4d6d;
   color: white;
-  left: 0;
 }
 
 #no {
   background: #eee;
   color: #555;
-  left: 180px;
+}
+
+/* FLOATING NO (after escape) */
+#no.floating {
+  position: fixed;
+  z-index: 5;
 }
 
 /* OVERLAY */
@@ -75,7 +81,7 @@ button {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  z-index: 50;
+  z-index: 10;
 }
 
 .overlay img {
@@ -99,7 +105,10 @@ button {
 
 @keyframes explode {
   0% { transform: scale(0.3); opacity: 1; }
-  100% { transform: scale(2.2) translateY(-250px) rotate(720deg); opacity: 0; }
+  100% {
+    transform: scale(2.5) translateY(-300px) rotate(720deg);
+    opacity: 0;
+  }
 }
 </style>
 </head>
@@ -126,27 +135,50 @@ const yesBtn = document.getElementById('yes');
 const noBtn = document.getElementById('no');
 const overlay = document.getElementById('overlay');
 
+let escaped = false;
 let firstNoClick = true;
 
-/* MOVE NO BUTTON */
-function moveNo() {
-  const container = document.querySelector('.buttons');
-  const maxX = container.offsetWidth - noBtn.offsetWidth;
-  const maxY = container.offsetHeight - noBtn.offsetHeight;
+/* RANDOM SCREEN POSITION */
+function randomScreenPos(btn) {
+  const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+  const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+  btn.style.left = x + 'px';
+  btn.style.top = y + 'px';
+}
 
-  noBtn.style.left = Math.random() * maxX + 'px';
-  noBtn.style.top = Math.random() * maxY + 'px';
+/* RELEASE THE NO BUTTON */
+function releaseNo() {
+  if (escaped) return;
+
+  const rect = noBtn.getBoundingClientRect();
+  noBtn.classList.add('floating');
+  noBtn.style.left = rect.left + 'px';
+  noBtn.style.top = rect.top + 'px';
+
+  escaped = true;
 }
 
 /* NO RUNS FROM CURSOR */
-noBtn.addEventListener('mouseenter', moveNo);
+document.addEventListener('mousemove', e => {
+  if (!escaped) return;
+
+  const r = noBtn.getBoundingClientRect();
+  const dx = e.clientX - (r.left + r.width / 2);
+  const dy = e.clientY - (r.top + r.height / 2);
+  const dist = Math.hypot(dx, dy);
+
+  if (dist < 220) {
+    randomScreenPos(noBtn);
+  }
+});
 
 /* NO CLICK */
 noBtn.addEventListener('click', () => {
-  moveNo();
+  releaseNo();
+  randomScreenPos(noBtn);
 
   if (firstNoClick) {
-    yesBtn.style.transform = 'scale(2.2)';
+    yesBtn.style.transform = 'scale(2.3)';
     firstNoClick = false;
   }
 
@@ -159,7 +191,7 @@ noBtn.addEventListener('click', () => {
 yesBtn.addEventListener('click', () => {
   overlay.style.display = 'flex';
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 120; i++) {
     const fw = document.createElement('div');
     fw.className = 'firework';
     fw.textContent = ['🎆','🎇','✨','💖','🔥'][Math.floor(Math.random()*5)];
